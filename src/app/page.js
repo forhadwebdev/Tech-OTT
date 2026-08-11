@@ -3,13 +3,13 @@ import HomeContent from "@/components/HomeContent";
 
 export const dynamic = "force-dynamic";
 
-// এখানে searchParams কে await করা হয়েছে (Next.js এর নতুন নিয়ম)
 export async function generateMetadata({ searchParams }) {
   const resolvedParams = await searchParams;
   const dramaId = resolvedParams?.drama;
   
-  let title = "Love Story Drama";
-  let description = "সেরা কোরিয়ান লাভ স্টোরি ড্রামা, সম্পূর্ণ এপিসোড এখনই উপভোগ করুন";
+  // ডিফল্ট টাইটেলেই বাংলা যুক্ত করা হলো
+  let title = "Love Story Drama | সেরা কোরিয়ান লাভ স্টোরি";
+  let description = "সম্পূর্ণ এপিসোড এখনই উপভোগ করুন";
   let imageUrl = "https://lovestorydrama.vercel.app/heroimg.jpg"; 
   let pageUrl = "https://lovestorydrama.vercel.app"; 
 
@@ -23,7 +23,9 @@ export async function generateMetadata({ searchParams }) {
     
     const selectedDrama = dramaCards.find(d => d.id === dramaId);
     if (selectedDrama) {
-      title = selectedDrama.title;
+      // ডাইনামিক টাইটেলেও বাংলা যুক্ত করা হলো
+      title = `${selectedDrama.title} | সেরা কোরিয়ান লাভ স্টোরি`;
+      description = `সম্পূর্ণ এপিসোড এখনই উপভোগ করুন`;
       imageUrl = `https://lovestorydrama.vercel.app${selectedDrama.image}`; 
       pageUrl = `https://lovestorydrama.vercel.app/?drama=${dramaId}`; 
     }
