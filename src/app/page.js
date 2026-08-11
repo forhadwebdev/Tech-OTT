@@ -1,14 +1,15 @@
 // src/app/page.js
 import HomeContent from "@/components/HomeContent";
 
+// পেজটিকে ডাইনামিক করার জন্য এই লাইনটি খুব জরুরি, যাতে প্রতিবার লিংকের আইডি অনুযায়ী ডাটা চেঞ্জ হয়
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ searchParams }) {
   const dramaId = searchParams?.drama;
   
   let title = "Love Story Drama";
   let description = "সেরা কোরিয়ান লাভ স্টোরি ড্রামা, সম্পূর্ণ এপিসোড এখনই উপভোগ করুন";
   let imageUrl = "https://lovestorydrama.vercel.app/heroimg.jpg"; 
-  
-  // ডিফল্ট পেজ ইউআরএল
   let pageUrl = "https://lovestorydrama.vercel.app"; 
 
   if (dramaId) {
@@ -23,18 +24,18 @@ export async function generateMetadata({ searchParams }) {
     if (selectedDrama) {
       title = selectedDrama.title;
       imageUrl = `https://lovestorydrama.vercel.app${selectedDrama.image}`; 
-      // ডাইনামিক পেজ ইউআরএল সেট করা হলো, যেন ফেসবুক কনফিউজড না হয়
       pageUrl = `https://lovestorydrama.vercel.app/?drama=${dramaId}`; 
     }
   }
 
   return {
+    metadataBase: new URL('https://lovestorydrama.vercel.app'),
     title: title,
     description: description,
     openGraph: {
       title: title,
       description: description,
-      url: pageUrl, // এখানে ডাইনামিক URL পাস করা হলো
+      url: pageUrl,
       siteName: 'Love Story Drama',
       images: [
         {
@@ -49,7 +50,6 @@ export async function generateMetadata({ searchParams }) {
   };
 }
 
-// --- মূল হোমপেজ রেন্ডার ---
 export default function Home() {
   return <HomeContent />;
 }
