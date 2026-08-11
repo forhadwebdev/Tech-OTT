@@ -1,7 +1,7 @@
 // src/components/HomeContent.js
 "use client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import UserRegisterModal from "@/components/UserRegisterModal";
 import AdminLoginModal from "@/components/AdminLoginModal";
@@ -10,7 +10,28 @@ import DramaCards from "@/components/DramaCards";
 export default function HomeContent() {
   const [showUserRegister, setShowUserRegister] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [highlightSection, setHighlightSection] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // ইনস্টাগ্রাম বা ফেসবুকের শেয়ার লিংক (?drama=...) থেকে আসলে অটো স্ক্রল এবং হাইলাইট করার জন্য
+  useEffect(() => {
+    const dramaId = searchParams.get("drama");
+    if (dramaId) {
+      const targetSection = document.getElementById("drama-section");
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: "smooth" });
+        
+        // সেকশনে পৌঁছানোর পর হালকা হাইলাইট এফেক্ট চালু করা
+        setHighlightSection(true);
+        const timer = setTimeout(() => {
+          setHighlightSection(false);
+        }, 2000); // ২ সেকেন্ড পর হাইলাইট বর্ডার মুছে যাবে
+        
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [searchParams]);
 
   const handleAdminClick = () => {
     const isAdminLoggedIn = localStorage.getItem("adminAuth");
@@ -80,8 +101,13 @@ export default function HomeContent() {
         </div>
       </div>
 
-      {/* ---------------- Video Cards Component ---------------- */}
-      <DramaCards onWatchClick={() => setShowUserRegister(true)} />
+      {/* ---------------- Video Cards Component with Auto-Scroll ID & Highlight ---------------- */}
+      <div 
+        id="drama-section" 
+        className={`transition-all duration-500 ${highlightSection ? 'ring-4 ring-red-600 rounded-lg shadow-2xl shadow-red-600/50' : ''}`}
+      >
+        <DramaCards onWatchClick={() => setShowUserRegister(true)} />
+      </div>
 
       {/* ---------------- Modals ---------------- */}
       {showUserRegister && <UserRegisterModal onClose={() => setShowUserRegister(false)} />}
