@@ -3,8 +3,10 @@ import HomeContent from "@/components/HomeContent";
 
 export const dynamic = "force-dynamic";
 
+// এখানে searchParams কে await করা হয়েছে (Next.js এর নতুন নিয়ম)
 export async function generateMetadata({ searchParams }) {
-  const dramaId = searchParams?.drama;
+  const resolvedParams = await searchParams;
+  const dramaId = resolvedParams?.drama;
   
   let title = "Love Story Drama";
   let description = "সেরা কোরিয়ান লাভ স্টোরি ড্রামা, সম্পূর্ণ এপিসোড এখনই উপভোগ করুন";
@@ -31,7 +33,6 @@ export async function generateMetadata({ searchParams }) {
     metadataBase: new URL('https://lovestorydrama.vercel.app'),
     title: title,
     description: description,
-    // ফেসবুককে নির্দিষ্ট লিংক বোঝানোর জন্য Canonical URL যুক্ত করা হলো
     alternates: {
       canonical: pageUrl,
     },
