@@ -1,7 +1,6 @@
 // src/app/page.js
 import HomeContent from "@/components/HomeContent";
 
-// পেজটিকে ডাইনামিক করার জন্য এই লাইনটি খুব জরুরি, যাতে প্রতিবার লিংকের আইডি অনুযায়ী ডাটা চেঞ্জ হয়
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ searchParams }) {
@@ -14,10 +13,10 @@ export async function generateMetadata({ searchParams }) {
 
   if (dramaId) {
     const dramaCards = [
-      { id: "1", image: "/hq720.jpg", title: "Korean Drama 1" },
-      { id: "2", image: "/images (2).jpg", title: "Korean Drama 2" },
-      { id: "3", image: "/maxresdefault.jpg", title: "Korean Drama 3" },
-      { id: "4", image: "/hq720 (1).jpg", title: "Korean Drama 4" },
+      { id: "1", image: "/drama1.jpg", title: "Korean Drama 1" },
+      { id: "2", image: "/drama2.jpg", title: "Korean Drama 2" },
+      { id: "3", image: "/drama3.jpg", title: "Korean Drama 3" },
+      { id: "4", image: "/drama4.jpg", title: "Korean Drama 4" },
     ];
     
     const selectedDrama = dramaCards.find(d => d.id === dramaId);
@@ -32,6 +31,10 @@ export async function generateMetadata({ searchParams }) {
     metadataBase: new URL('https://lovestorydrama.vercel.app'),
     title: title,
     description: description,
+    // ফেসবুককে নির্দিষ্ট লিংক বোঝানোর জন্য Canonical URL যুক্ত করা হলো
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
       title: title,
       description: description,

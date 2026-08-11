@@ -2,12 +2,11 @@
 "use client";
 import Image from "next/image";
 
-export default function DramaCards({ onWatchClick }) {
-  const dramaCards = [
-    { id: 1, image: "/hq720.jpg", title: "Korean Drama 1" },
-    { id: 2, image: "/images (2).jpg", title: "Korean Drama 2" },
-    { id: 3, image: "/maxresdefault.jpg", title: "Korean Drama 3" },
-    { id: 4, image: "/hq720 (1).jpg", title: "Korean Drama 4" },
+const dramaCards = [
+    { id: "1", image: "/drama1.jpg", title: "Korean Drama 1" },
+    { id: "2", image: "/drama2.jpg", title: "Korean Drama 2" },
+    { id: "3", image: "/drama3.jpg", title: "Korean Drama 3" },
+    { id: "4", image: "/drama4.jpg", title: "Korean Drama 4" },
   ];
 
   // শেয়ার করার ফাংশন
