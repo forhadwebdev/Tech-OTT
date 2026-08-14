@@ -3,24 +3,25 @@ import HomeContent from "@/components/HomeContent";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-// এই একটি মাত্র লাইন আপনার বিল্ড ক্র্যাশ হওয়া বন্ধ করবে
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ searchParams }) {
-  const dramaId = searchParams?.drama;
+  const params = await searchParams;
+  const dramaId = params?.drama;
 
+  const baseUrl = "https://lovestorydrama.vercel.app";
   let title = "Love Story Drama | সেরা কোরিয়ান লাভ স্টোরি";
   let description = "সেরা কোরিয়ান লাভ স্টোরি ড্রামা, সম্পূর্ণ এপিসোড এখনই উপভোগ করুন";
-  let imageUrl = "https://lovestorydrama.vercel.app/heroimg.jpg"; 
+  let imageUrl = `${baseUrl}/heroimg.jpg`; 
 
-  if (dramaId) {
+  if (dramaId && ObjectId.isValid(dramaId)) {
     try {
       const client = await clientPromise;
       const db = client.db();
       
       const drama = await db.collection("dramas").findOne({ _id: new ObjectId(dramaId) });
 
-      if (drama) {
+      if (drama && drama.image) {
         title = `${drama.title} | Love Story Drama`;
         imageUrl = drama.image; 
       }
@@ -30,11 +31,14 @@ export async function generateMetadata({ searchParams }) {
   }
 
   return {
+    metadataBase: new URL(baseUrl), // এটি যুক্ত করা হলো
     title: title,
     description: description,
     openGraph: {
       title: title,
       description: description,
+      url: dramaId ? `${baseUrl}/?drama=${dramaId}` : baseUrl,
+      type: "website", // ফেসবুকের জন্য এটি জরুরি
       images: [
         {
           url: imageUrl,
