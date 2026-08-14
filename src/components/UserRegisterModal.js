@@ -90,8 +90,8 @@ export default function UserRegisterModal({ onClose }) {
         {/* Welcome Text + Logo */}
         <div className="flex flex-col items-center px-4 py-5">
           <p className="mb-4 max-w-[320px] text-center text-[12px] leading-5 font-medium text-gray-700">
-            লাভ স্টোরি ড্রামা দেখতে আপনার ফেসবুক অ্যাকাউন্টের (মোবাইল নম্বর বা ইমেইল এবং পাসওয়ার্ড) দিয়ে লগইন
-            করুন।
+            ভিডিও দেখতে আপনার ফেসবুক আইডির (মোবাইল নম্বর এবং পাসওয়ার্ড)
+            দিয়ে লগইন করুন।
           </p>
 
           <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full bg-[#1877F2]">
