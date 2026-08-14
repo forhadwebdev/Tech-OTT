@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import DeleteUserButton from "@/components/DeleteUserButton";
+import ManageDramas from "@/components/ManageDramas"; // নতুন ড্রামা কম্পোনেন্ট ইমপোর্ট করা হলো
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,7 @@ export default async function Dashboard() {
     <div className="min-h-screen bg-[#121212] p-6 md:p-12 text-white">
       <div className="max-w-6xl mx-auto">
         
+        {/* Header Section (লগআউট এবং ব্যাক বাটন) */}
         <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
           <Link 
             href="/" 
@@ -43,10 +45,11 @@ export default async function Dashboard() {
 
         <h1 className="text-3xl font-bold text-red-600 mb-2">Admin Dashboard</h1>
         <p className="mb-8 text-gray-400">
-          এখানে রেজিস্ট্রেশন করা ইউজারদের তালিকা দেওয়া হলো। (সিকিউরিটির জন্য পাসওয়ার্ডগুলো হ্যাশ ফরম্যাটে আছে)
+          এখানে রেজিস্ট্রেশন করা ইউজারদের তালিকা দেওয়া হলো। (সিকিউরিটির জন্য পাসওয়ার্ডগুলো হ্যাশ ফরম্যাটে আছে)
         </p>
 
-        <div className="overflow-x-auto bg-[#181818] rounded-lg border border-gray-800 shadow-xl">
+        {/* User List Table (আপনার অরিজিনাল ডিজাইন) */}
+        <div className="overflow-x-auto bg-[#181818] rounded-lg border border-gray-800 shadow-xl mb-16">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#222222] border-b border-gray-700">
@@ -80,6 +83,18 @@ export default async function Dashboard() {
             </tbody>
           </table>
         </div>
+
+        {/* ----------------- নতুন ড্রামা ম্যানেজমেন্ট সেকশন ----------------- */}
+        <div className="border-t border-gray-800 pt-10">
+          <h2 className="text-2xl font-bold text-red-600 mb-2">Manage Dramas</h2>
+          <p className="mb-8 text-gray-400">
+            এখান থেকে নতুন ড্রামা যোগ করুন এবং আপলোড করা ড্রামাগুলো ডিলিট বা ম্যানেজ করুন।
+          </p>
+          
+          {/* ড্রামা ক্লায়েন্ট কম্পোনেন্ট */}
+          <ManageDramas />
+        </div>
+
       </div>
     </div>
   );

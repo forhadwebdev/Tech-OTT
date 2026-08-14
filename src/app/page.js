@@ -1,48 +1,41 @@
 // src/app/page.js
 import HomeContent from "@/components/HomeContent";
+import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
-export const dynamic = "force-dynamic";
-
+// ডাইনামিক মেটা ট্যাগ জেনারেট করার ফাংশন (Social Media Sharing এর জন্য)
 export async function generateMetadata({ searchParams }) {
-  const resolvedParams = await searchParams;
-  const dramaId = resolvedParams?.drama;
-  
-  // ডিফল্ট টাইটেলেই বাংলা যুক্ত করা হলো
-  let title = "Love Story Drama | সেরা কোরিয়ান লাভ স্টোরি";
-  let description = "সম্পূর্ণ এপিসোড এখনই উপভোগ করুন";
-  let imageUrl = "https://lovestorydrama.vercel.app/heroimg.jpg"; 
-  let pageUrl = "https://lovestorydrama.vercel.app"; 
+  const dramaId = searchParams?.drama;
 
+  // ডিফল্ট মেটা ডেটা (যদি কেউ কোনো নির্দিষ্ট ড্রামা ছাড়া শুধু মেইন ওয়েবসাইটের লিংক শেয়ার করে)
+  let title = "Love Story Drama | সেরা কোরিয়ান লাভ স্টোরি";
+  let description = "সেরা কোরিয়ান লাভ স্টোরি ড্রামা, সম্পূর্ণ এপিসোড এখনই উপভোগ করুন";
+  let imageUrl = "https://lovestorydrama.vercel.app/heroimg.jpg"; // আপনার ডিফল্ট ব্যাকগ্রাউন্ড ছবি
+
+  // যদি লিংকে ?drama=... থাকে, তবে ডাটাবেস থেকে সেই ড্রামার ছবি ও টাইটেল আনবে
   if (dramaId) {
-    const dramaCards = [
-      { id: "1", image: "/drama1.jpg", title: "Korean Drama 1" },
-      { id: "2", image: "/drama2.jpg", title: "Korean Drama 2" },
-      { id: "3", image: "/drama3.jpg", title: "Korean Drama 3" },
-      { id: "4", image: "/drama4.jpg", title: "Korean Drama 4" },
-    ];
-    
-    const selectedDrama = dramaCards.find(d => d.id === dramaId);
-    if (selectedDrama) {
-      // ডাইনামিক টাইটেলেও বাংলা যুক্ত করা হলো
-      title = `${selectedDrama.title} | সেরা কোরিয়ান লাভ স্টোরি`;
-      description = `সম্পূর্ণ এপিসোড এখনই উপভোগ করুন`;
-      imageUrl = `https://lovestorydrama.vercel.app${selectedDrama.image}`; 
-      pageUrl = `https://lovestorydrama.vercel.app/?drama=${dramaId}`; 
+    try {
+      const client = await clientPromise;
+      const db = client.db();
+      
+      // ডাটাবেস থেকে নির্দিষ্ট ড্রামাটি খোঁজা
+      const drama = await db.collection("dramas").findOne({ _id: new ObjectId(dramaId) });
+
+      if (drama) {
+        title = `${drama.title} | Love Story Drama`;
+        imageUrl = drama.image; // ক্লাউডিনারি থেকে আসা ড্রামার ছবি
+      }
+    } catch (error) {
+      console.error("Error fetching metadata for sharing:", error);
     }
   }
 
   return {
-    metadataBase: new URL('https://lovestorydrama.vercel.app'),
     title: title,
     description: description,
-    alternates: {
-      canonical: pageUrl,
-    },
     openGraph: {
       title: title,
       description: description,
-      url: pageUrl,
-      siteName: 'Love Story Drama',
       images: [
         {
           url: imageUrl,
@@ -51,11 +44,20 @@ export async function generateMetadata({ searchParams }) {
           alt: title,
         },
       ],
-      type: 'website',
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: title,
+      description: description,
+      images: [imageUrl],
     },
   };
 }
 
-export default function Home() {
-  return <HomeContent />;
+export default function HomePage() {
+  return (
+    <main>
+      <HomeContent />
+    </main>
+  );
 }

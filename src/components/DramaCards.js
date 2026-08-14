@@ -1,19 +1,24 @@
 // src/components/DramaCards.js
 "use client";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function DramaCards({ onWatchClick }) {
-  const dramaCards = [
-    { id: "1", image: "/drama1.jpg", title: "Korean Drama 1" },
-    { id: "2", image: "/drama2.jpg", title: "Korean Drama 2" },
-    { id: "3", image: "/drama3.jpg", title: "Korean Drama 3" },
-    { id: "4", image: "/drama4.jpg", title: "Korean Drama 4" },
-  ];
+  const [dramas, setDramas] = useState([]);
+
+  // ডাটাবেস থেকে ডাইনামিক ডেটা লোড করা
+  useEffect(() => {
+    fetch("/api/dramas", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => setDramas(data))
+      .catch((err) => console.error("Error fetching dramas:", err));
+  }, []);
 
   const handleShare = async (e, card) => {
     e.stopPropagation(); 
     
-    const shareUrl = `https://lovestorydrama.vercel.app/?drama=${card.id}`;
+    // ডাইনামিক লিংক (লাইভ এবং লোকালহোস্ট উভয়ের জন্য)
+    const shareUrl = `${window.location.origin}/?drama=${card._id}`;
     
     const shareData = {
       title: 'Love Story Drama',
@@ -25,11 +30,11 @@ export default function DramaCards({ onWatchClick }) {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        console.log('শেয়ার করা বাতিল হয়েছে বা এরর:', err);
+        console.log('শেয়ার করা বাতিল হয়েছে বা এরর:', err);
       }
     } else {
       navigator.clipboard.writeText(shareUrl);
-      alert("ড্রামার লিংক কপি করা হয়েছে! এখন আপনি এটি পেস্ট করে শেয়ার করতে পারেন।");
+      alert("ড্রামার লিংক কপি করা হয়েছে! এখন আপনি এটি পেস্ট করে শেয়ার করতে পারেন।");
     }
   };
 
@@ -41,8 +46,8 @@ export default function DramaCards({ onWatchClick }) {
         </h3>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {dramaCards.map((card) => (
-            <div key={card.id} className="bg-[#181818] rounded-lg overflow-hidden border border-gray-800 hover:border-gray-600 transition-colors group relative">
+          {dramas.map((card) => (
+            <div key={card._id} className="bg-[#181818] rounded-lg overflow-hidden border border-gray-800 hover:border-gray-600 transition-colors group relative">
               
               <button
                 onClick={(e) => handleShare(e, card)}
@@ -55,17 +60,19 @@ export default function DramaCards({ onWatchClick }) {
               </button>
 
               <div 
-                className="relative aspect-video cursor-pointer overflow-hidden"
+                className="relative aspect-video cursor-pointer overflow-hidden border-2 border-transparent group-hover:border-[#129c94] transition-colors"
                 onClick={onWatchClick} 
               >
-                <Image 
-                  src={card.image} 
-                  alt={`Drama Cover ${card.id}`} 
-                  fill 
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                {card.image && (
+                  <Image 
+                    src={card.image} 
+                    alt={card.title} 
+                    fill 
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                )}
                 
-                {/* মোবাইলে ছোট (w-10 h-10) এবং ডেস্কটপে বড় (md:w-14 md:h-14) প্লে বাটন */}
+                {/* মোবাইলে ছোট (w-10 h-10) এবং ডেস্কটপে বড় (md:w-14 md:h-14) প্লে বাটন */}
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity duration-300 z-10">
                   <div className="w-10 h-10 md:w-14 md:h-14 bg-red-600/90 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 md:w-8 md:h-8 text-white ml-0.5">
